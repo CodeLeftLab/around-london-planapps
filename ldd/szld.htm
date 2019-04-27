@@ -1,0 +1,56 @@
+<!DOCTYPE html><html><head><meta content="text/html; charset=utf-8" http-equiv="Content-Type"><meta content="initial-scale=1, maximum-scale=1,user-scalable=no" name="viewport">
+<title>London Planning Permissions</title><!-- 2do fix share links Enter this page's URL at the following link, if changing this data: https://developers.facebook.com/tools/debug/og/object/ 
+in map3.js  1) what is new esri.SpatialReference({wkid: 3857 }));  2:) if (typeof foo != 'undefined') foo(); 3) @todo 4) https://maps.london.gov.uk/utils/connection-test/blank.gif
+5) "https://maps.london.gov.uk/gla/rest/services/LIDB_2050/2050_planning_policy/MapServer/5" 6) create_transparency_control - DOES THIS WORK? 7) top: "95px" }  }), maxZoom: 18
+8) fix search_widget in 2szmap.js [suggestions are broken] see here http://gis.stackexchange.com/questions/183156/invalid-url-error-when-using-suggestions-in-esri-locator-service)
+9) Move var rings out of map.js into szvars.js
+--><meta property="og:image" content="sz/2szfb.png"><meta property="og:description" content="The Greater London Authority (GLA) collects data about the major planning permissions in London through the London Development Database. The data is provided by the London boroughs, who are responsible for providing details of the permissions in their area."><!---->
+<link rel="shortcut icon" href="sz/fff-rosette.ico"><link rel="manifest" href="sz/szmanifest.json"><link href="css/szstyles3.css" rel="stylesheet"><link href="css/szmobile.css" rel="stylesheet"></head>
+<body class="tundra loading"><div id="mapDiv">
+<div id="backpage" style="position:absolute;top:0;left:0;height:48px;width:100%;z-index:30;box-shadow:0 -1px 6px black" onclick="minimise(false)" class="noselect back_panel">Back to Filters<img src="images/left@2x.png"></div>
+<div id="back_to_map" style="position:absolute;font-size:13px;left:0;overflow-y:auto;width:100%;top:0;height:100%;background:white;z-index:99">
+    <div onclick="go_back_to_map()" class="noselect back_panel blue"> Back to Map <img src="images/left@2x.png" style="left:30px">     </div>
+    <div style="padding:20px 15px 15px;position:relative;">                <div id="content">                   ...                </div>            </div>        </div>
+<div id="notifier" class="boroughs" style="display:none">
+    <div id="export_button" style="position:absolute;width:100%;bottom: 0px;"><div style="position:absolute;top:0;width:100%"><div style="width: 130px;margin:0 auto;">
+        <div class="valign" style="pointer-events:all;cursor:pointer;background:white;font-weight:bold;padding:5px;box-shadow: 0 0 6px #666;border-radius: 0 0 6px 6px;color: darkgreen;">
+        <img src="images/green_arrow.png"> <var onclick="do_export()">Export Data</var> </div></div></div> </div>
+     <div id="location_holder"><div id="do_click" style="font-size:17px"><img src="images/info.png" style="vertical-align:middle;width:18px">
+		<span style="vertical-align:middle">Click an area for more information</span></div>
+        <div id="ward_title"><var style="color:#9e0059" onclick="go_home()">Greater London</var>
+            <div id="extra">> <var onclick="goto_last_borough()" id='borough_picked'>BOROUGH</var><div id='ward_picked'> > <span onclick="goto_last_ward()">WARD</span></div> </div></div> </div></div>
+<div id="buttons" style="display:none;"><div onclick="go_home()" alt="Return to full map extent" style="background-image:url(images/home2.png)"></div><div onclick="map.setZoom(map.getZoom()+1)">+</div>
+    <div id="transparency_button" alt="set transparency" style="background-image:url(images/transparency.png);clear:left">
+	<div onclick="transparency.toggle()" style="position:absolute;right:0;top:0;width:100%;height:100%;"></div>
+    <div id="transparency_holder" onclick="transparency.check_event(event)" onmousedown="transparency.start_drag(event)" onmousemove="transparency.move(event)" style="position:absolute;right: 30px;border:1px solid #57585A;top:-1px;z-index:1;display:none;width:204px;height:100%;background:white;border-radius:5px 0 0 5px;overflow:hidden;">
+                    <div style="width: 100%; height: 100%; color:black;text-shadow: white 0px 1px 2px; line-height: 30px; text-indent: 10px; font-size: 14px; font-family: Arial; background:#E068A9">
+                        Transparency</div></div></div><div onclick="map.setZoom(map.getZoom()-1)">–</div></div><div class="loader"><div></div></div>
+
+<div style="position:relative"><div id="newpopup"></div>
+    <div id="panel"><div id="mayor_holder" style=""><a id="mayor_logo" href="https://www.limecomms.gq"><div></div><img src="sz/szlogo2.png"></a></div>
+        <div id="title_holder" style="border-bottom:1px solid #d5d5d5;padding:14px 15px 10px;background:#e3e3e3;text-align:center">
+                    <a href="." style="text-decoration:none;color:black"><img src="sz/szlogo_planning@2x.png" style="width:206px;height:60px"></a></div>
+        <div id="main_loader" style="background:white;color:#666;padding:20px;text-align:center;border-radius:0 0 4px 4px">Loading...</div>
+        <div id="content_holder" style="padding:17px 15px 10px;background:white;font-size:14px"><div id="search"><div id="LocateButton"></div></div>
+            <div id="content" style="overflow-y:auto;padding-right: 5px; margin-right: -5px;margin-top:20px;">
+                <div style="overflow:hidden;"><div id="lddfilters" class="hide_legend"><div name="status"><div class="subtitle" style="margin-top:0">Project Status</div>
+                    <div><label><input type="checkbox"><span>Not Started</span></label><label><input type="checkbox"><span>Started</span></label><label><input type="checkbox"><span>Completed</span></label></div></div>
+<div name="mapclass"><div class="subtitle">Building Type</div><div id="type_groups"><div><label><input name="home" type="checkbox"><span>Residential</span></label><label><input name="business" type="checkbox"><span>Commercial</span></label><label><input name="misc" type="checkbox"><span>Other</span></label><div class="advanced_toggle" onclick="show_advanced()">[ Show Advanced Types ]</div></div>
+<div><label><input name="Major Residential" type="checkbox"><span>Major Residential (>150 units)</span></label><label><input name="Medium Residential" type="checkbox"><span>Medium Residential (10-150 units)</span></label><label><input name="Minor Residential" type="checkbox"><span>Minor Residential (<10 units)</span></label><label><input name="Mixed" type="checkbox"><span>Mixed Residential and other uses</span></label><label><input name="A1 Retail" type="checkbox"><span>Retail</span></label><label><input name="A2 Financial Institutions" type="checkbox"><span>High street finance</span></label><label><input name="A3 Cafes" type="checkbox"><span>Restaurants and cafes</span></label><label><input name="A4 Drinking est" type="checkbox"><span>Drinking establishments</span></label><label style="display:none"><input name="home" type="checkbox"><span>Takeaways</span></label><label><input name="B1 Office" type="checkbox"><span>Office</span></label><label><input name="B1c B2 B8 Industrial" type="checkbox"><span>Industrial</span></label><label><input name="Bedroom Use classes" type="checkbox"><span>Hotels, hostels and care homes</span></label><label><input name="C2 D1 Non Res Institutions" type="checkbox"><span>Institutions</span></label><label><input name="D2 Leisure" type="checkbox"><span>Leisure</span></label><label><input name="Open Space" type="checkbox"><span>Open Space</span></label><label><input name="Misc" type="checkbox"><span>Miscellaneous</span></label><div class="advanced_toggle" onclick="show_advanced(false)">[ Hide Advanced Types ]</div></div></div></div></div></div>
+                <div id="context" style="display:none;margin:18px 0 10px"> <div style="position:relative;"><select class="subtitle" style="margin:0"><option value="-1">Context Layers</option><option value="13">Protected Vistas</option><option value="14">Areas Exempt from B1a to C3 PD</option><option value="15">Subregions (2011)</option><option value="opportunity_areas">Opportunity Areas</option></select>
+                    <div id="context_buttons"><div onclick="context_opacity.next()" style="background-image:url(images/transparency.png)" title="Toggle Transparency"></div>
+                        <div onclick="context_info()" style="background-image:url(images/advanced_i.png)" title="More Information"></div>
+                        <div onclick="clear_context()" style="background-image:url(images/advanced_close2.png);" title="Hide"></div> </div></div> </div> </div>
+			<div id="expand_map_button" class="big_button" onclick="minimise()"><img src="images/view_map@2x.png" alt="View Map"></div></div>
+        <div id="footer"><div id="standard"><var onclick="about_map()">About</var> &nbsp;&nbsp;|&nbsp;&nbsp; <var onclick="doorbell.show()">Feedback</var>
+            <span id='clear_holder'><span>&nbsp;&nbsp;|&nbsp;&nbsp;</span> <var onclick="clear_filters()">Show All</var></span></div>
+            <div id="share"><div id="facebook" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https%3A//maps.london.gov.uk/ldd/','name','width=600,height=400');" title="Share on Facebook"></div>
+                <div id="twitter" onclick="window.open('https://twitter.com/home?status=London%20Development%20Database%3A%20https%3A//maps.london.gov.uk/ldd/','name','width=600,height=400');" title="Share on Twitter"></div><a id="email" href="mailto:?subject=London Development Database&body=https://maps.london.gov.uk/ldd/" title="Share via Email"></a></div></div></div>
+    <div id="thumb" onmouseover="show_thumb(false)"></div></div></div>
+<link rel="stylesheet" href="css/sweetalert.css"><link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.24/dijit/themes/tundra/tundra.css" />
+<link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.24/esri/css/esri.css" /><script>var dojoConfig = {paths: {extras: location.pathname.replace(/\/[^/]+$/, '') }}; var isLteIE8 = false;
+        var isIE = /*@cc_on!@*/ false || window.navigator.msPointerEnabled;</script>
+<!--[if lte IE 8]><style>#panel, #thumb, #helper > div {border:1px solid #888;}</style><script>isLteIE8 = true;</script>	<![endif]-->
+<script src="js/sweetalert.min.js"></script><script src="//code.jquery.com/jquery-1.11.1.min.js"></script><script type="text/javascript" src="//js.arcgis.com/3.24/init.js"></script>
+<script src="js/rainbowvis.js"></script><script src="js/borlink.js"></script><script src="../common.js"></script>
+<script src="js/2szmap.js?rel=20190429T1253"></script><script type="text/javascript" src="js/homecatchment_2015_2.js"></script></body></html>
